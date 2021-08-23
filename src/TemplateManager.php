@@ -59,7 +59,9 @@ class TemplateManager
                         $text
                     );}}
 
-            (strpos($text, '[lesson:instructor_name]') !== false) and $text = str_replace('[lesson:instructor_name]',$instructor->firstname,$text);
+            if (strpos($text, '[lesson:instructor_name]') !== false) {
+                $text = str_replace('[lesson:instructor_name]',$instructor->firstname,$text);
+            }
         }
 
         if ($lesson->meetingPointId) {
@@ -77,7 +79,7 @@ class TemplateManager
             $text = str_replace('[lesson:end_time]', $lesson->end_time->format('H:i'), $text);
 
 
-            if (isset($data['instructor'])  and ($data['instructor']  instanceof Instructor))
+            if (isset($data['instructor']) && ($data['instructor']  instanceof Instructor))
                 $text = str_replace('[instructor_link]',  'instructors/' . $data['instructor']->id .'-'.urlencode($data['instructor']->firstname), $text);
             else
                 $text = str_replace('[instructor_link]', '', $text);
@@ -86,9 +88,11 @@ class TemplateManager
          * USER
          * [user:*]
          */
-        $_user  = (isset($data['user'])  and ($data['user']  instanceof Learner))  ? $data['user']  : $APPLICATION_CONTEXT->getCurrentUser();
+        $_user  = (isset($data['user'])  && ($data['user']  instanceof Learner))  ? $data['user']  : $APPLICATION_CONTEXT->getCurrentUser();
         if($_user) {
-            (strpos($text, '[user:first_name]') !== false) and $text = str_replace('[user:first_name]'       , ucfirst(strtolower($_user->firstname)), $text);
+            if (strpos($text, '[user:first_name]') !== false) {
+                $text = str_replace('[user:first_name]'       , ucfirst(strtolower($_user->firstname)), $text);
+            }
         }
 
         return $text;
