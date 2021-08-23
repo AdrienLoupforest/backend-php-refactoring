@@ -61,7 +61,7 @@ class TemplateManager
         }
 
         if ($lesson->meetingPointId) {
-            if($this->ShouldBeReplaced($text, '[lesson:meeting_point]') !== false)
+            if($this->ShouldBeReplaced($text, '[lesson:meeting_point]'))
                 $text = str_replace('[lesson:meeting_point]', $meetingPoint->name, $text);
         }
 
