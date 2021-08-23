@@ -37,12 +37,12 @@ class TemplateManager
             $meetingPoint = MeetingPointRepository::getInstance()->getById($lesson->meetingPointId);
             $instructor = InstructorRepository::getInstance()->getById($lesson->instructorId);
 
-            if(strpos($text, '[lesson:instructor_link]') !== false){
+            if($this->ShouldBeReplaced($text, '[lesson:instructor_link]')){
                 $text = str_replace('[instructor_link]',  'instructors/' . $instructor->id .'-'.urlencode($instructor->firstname), $text);
             }
 
-            $containsSummaryHtml = strpos($text, '[lesson:summary_html]');
-            $containsSummary     = strpos($text, '[lesson:summary]');
+            $containsSummaryHtml = $this->ShouldBeReplaced($text, '[lesson:summary_html]');
+            $containsSummary     = $this->ShouldBeReplaced($text, '[lesson:summary]');
 
             if ($containsSummaryHtml !== false || $containsSummary !== false) {
                 if ($containsSummaryHtml !== false) {
@@ -59,23 +59,23 @@ class TemplateManager
                         $text
                     );}}
 
-            if (strpos($text, '[lesson:instructor_name]') !== false) {
+            if ($this->ShouldBeReplaced($text, '[lesson:instructor_name]')) {
                 $text = str_replace('[lesson:instructor_name]',$instructor->firstname,$text);
             }
         }
 
         if ($lesson->meetingPointId) {
-            if(strpos($text, '[lesson:meeting_point]') !== false)
+            if($this->ShouldBeReplaced($text, '[lesson:meeting_point]') !== false)
                 $text = str_replace('[lesson:meeting_point]', $meetingPoint->name, $text);
         }
 
-        if(strpos($text, '[lesson:start_date]') !== false)
+        if($this->ShouldBeReplaced($text, '[lesson:start_date]'))
             $text = str_replace('[lesson:start_date]', $lesson->start_time->format('d/m/Y'), $text);
 
-        if(strpos($text, '[lesson:start_time]') !== false)
+        if($this->ShouldBeReplaced($text, '[lesson:start_time]'))
             $text = str_replace('[lesson:start_time]', $lesson->start_time->format('H:i'), $text);
 
-        if(strpos($text, '[lesson:end_time]') !== false)
+        if($this->ShouldBeReplaced($text, '[lesson:end_time]'))
             $text = str_replace('[lesson:end_time]', $lesson->end_time->format('H:i'), $text);
 
 
@@ -90,11 +90,15 @@ class TemplateManager
          */
         $_user  = (isset($data['user'])  && ($data['user']  instanceof Learner))  ? $data['user']  : $APPLICATION_CONTEXT->getCurrentUser();
         if($_user) {
-            if (strpos($text, '[user:first_name]') !== false) {
+            if ($this->ShouldBeReplaced($text,'[user:first_name]')) {
                 $text = str_replace('[user:first_name]'       , ucfirst(strtolower($_user->firstname)), $text);
             }
         }
 
         return $text;
+    }
+
+    private function ShouldBeReplaced($text, $value) {
+        return strpos($text, $value) !== false;
     }
 }
