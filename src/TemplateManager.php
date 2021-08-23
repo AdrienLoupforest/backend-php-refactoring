@@ -41,23 +41,19 @@ class TemplateManager
                 $text = str_replace('[instructor_link]',  'instructors/' . $instructor->id .'-'.urlencode($instructor->firstname), $text);
             }
 
-            $containsSummaryHtml = $this->ShouldBeReplaced($text, '[lesson:summary_html]');
-            $containsSummary     = $this->ShouldBeReplaced($text, '[lesson:summary]');
-
-            if ($containsSummaryHtml !== false || $containsSummary !== false) {
-                if ($containsSummaryHtml !== false) {
-                    $text = str_replace(
-                        '[lesson:summary_html]',
-                        Lesson::renderHtml($lesson),
-                        $text
-                    );
-                }
-                if ($containsSummary !== false) {
-                    $text = str_replace(
-                        '[lesson:summary]',
-                        Lesson::renderText($lesson),
-                        $text
-                    );}}
+            if ($this->ShouldBeReplaced($text, '[lesson:summary_html]')) {
+                $text = str_replace(
+                    '[lesson:summary_html]',
+                    Lesson::renderHtml($lesson),
+                    $text
+                );
+            }
+            if ($this->ShouldBeReplaced($text, '[lesson:summary]')) {
+                $text = str_replace(
+                    '[lesson:summary]',
+                    Lesson::renderText($lesson),
+                    $text
+                );}
 
             if ($this->ShouldBeReplaced($text, '[lesson:instructor_name]')) {
                 $text = str_replace('[lesson:instructor_name]',$instructor->firstname,$text);
