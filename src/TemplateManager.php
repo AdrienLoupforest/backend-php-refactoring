@@ -33,12 +33,12 @@ class TemplateManager
 
         if ($lesson)
         {
-            $_lessonFromRepository = LessonRepository::getInstance()->getById($lesson->id);
-            $usefulObject = MeetingPointRepository::getInstance()->getById($lesson->meetingPointId);
-            $instructorOfLesson = InstructorRepository::getInstance()->getById($lesson->instructorId);
+            $lesson = LessonRepository::getInstance()->getById($lesson->id);
+            $meetingPoint = MeetingPointRepository::getInstance()->getById($lesson->meetingPointId);
+            $instructor = InstructorRepository::getInstance()->getById($lesson->instructorId);
 
             if(strpos($text, '[lesson:instructor_link]') !== false){
-                $text = str_replace('[instructor_link]',  'instructors/' . $instructorOfLesson->id .'-'.urlencode($instructorOfLesson->firstname), $text);
+                $text = str_replace('[instructor_link]',  'instructors/' . $instructor->id .'-'.urlencode($instructor->firstname), $text);
             }
 
             $containsSummaryHtml = strpos($text, '[lesson:summary_html]');
@@ -48,23 +48,23 @@ class TemplateManager
                 if ($containsSummaryHtml !== false) {
                     $text = str_replace(
                         '[lesson:summary_html]',
-                        Lesson::renderHtml($_lessonFromRepository),
+                        Lesson::renderHtml($lesson),
                         $text
                     );
                 }
                 if ($containsSummary !== false) {
                     $text = str_replace(
                         '[lesson:summary]',
-                        Lesson::renderText($_lessonFromRepository),
+                        Lesson::renderText($lesson),
                         $text
                     );}}
 
-            (strpos($text, '[lesson:instructor_name]') !== false) and $text = str_replace('[lesson:instructor_name]',$instructorOfLesson->firstname,$text);
+            (strpos($text, '[lesson:instructor_name]') !== false) and $text = str_replace('[lesson:instructor_name]',$instructor->firstname,$text);
         }
 
         if ($lesson->meetingPointId) {
             if(strpos($text, '[lesson:meeting_point]') !== false)
-                $text = str_replace('[lesson:meeting_point]', $usefulObject->name, $text);
+                $text = str_replace('[lesson:meeting_point]', $meetingPoint->name, $text);
         }
 
         if(strpos($text, '[lesson:start_date]') !== false)
